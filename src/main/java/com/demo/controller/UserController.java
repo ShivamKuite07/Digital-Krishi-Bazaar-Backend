@@ -8,9 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.demo.dto.CreateUserDTO;
+import com.demo.dto.ProductDTO;
 import com.demo.dto.RoleDTO;
 import com.demo.dto.UserResponseDTO;
+import com.demo.model.Product;
 import com.demo.model.User;
+import com.demo.service.ProductService;
 import com.demo.service.UserService;
 
 @RestController
@@ -19,6 +22,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private ProductService productService;
+    
+    
 
     /* ======================
        CREATE USER
@@ -102,6 +110,24 @@ public class UserController {
                 .toList();
         return ResponseEntity.ok(users);
     }
+    
+    
+    /* ======================
+    GET PRODUCTS BY SELLER (USER)
+    ====================== */
+	 @GetMapping("/{userId}/products")
+	 public ResponseEntity<List<ProductDTO>> getProductsBySeller(
+	         @PathVariable Integer userId) {
+	
+	     List<ProductDTO> products = productService.getProductsBySeller(userId)
+	             .stream()
+	             .map(this::mapToProductDTO)
+	             .toList();
+	
+	     return ResponseEntity.ok(products);
+	 }
+
+    
 
     /* ======================
        ENTITY → DTO MAPPER
@@ -130,4 +156,35 @@ public class UserController {
         dto.setRoles(roles);
         return dto;
     }
+    
+    
+    
+    private ProductDTO mapToProductDTO(Product p) {
+
+        ProductDTO dto = new ProductDTO();
+        dto.setProductId(p.getProductId());
+        dto.setProductName(p.getProductName());
+        dto.setDescription(p.getDescription());
+        dto.setPrice(p.getPrice());
+        dto.setQuantityAvailable(p.getQuantityAvailable());
+        dto.setUnit(p.getUnit());
+        dto.setStatus(p.getStatus());
+        dto.setImageUrl(p.getImageUrl());
+        dto.setCreatedAt(p.getCreatedAt());
+
+        if (p.getCategory() != null) {
+            dto.setCategoryId(p.getCategory().getCategoryId());
+            dto.setCategoryName(p.getCategory().getCategoryName());
+        }
+
+        if (p.getSeller() != null) {
+            dto.setSellerId(p.getSeller().getUserId());
+            dto.setSellerName(p.getSeller().getUserName());
+        }
+
+        return dto;
+    }
+
+    
+    
 }

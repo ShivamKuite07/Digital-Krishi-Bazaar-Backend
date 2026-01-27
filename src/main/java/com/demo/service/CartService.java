@@ -90,6 +90,28 @@ public class CartService {
 
         return cartRepository.save(cart);
     }
+    
+    public Cart decrementProductFromCart(Integer userId, Integer productId) {
+
+        Cart cart = getCartByUser(userId);
+
+        CartItem item = cart.getCartItems()
+                .stream()
+                .filter(ci -> ci.getProduct().getProductId().equals(productId))
+                .findFirst()
+                .orElseThrow(() ->
+                    new RuntimeException("Product not in cart"));
+
+        if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+        } else {
+            cart.getCartItems().remove(item);
+            cartItemRepository.delete(item);
+        }
+
+        return cartRepository.save(cart);
+    }
+
 
     /* ======================
        REMOVE PRODUCT FROM CART

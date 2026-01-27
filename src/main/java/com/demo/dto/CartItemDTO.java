@@ -8,6 +8,17 @@ public class CartItemDTO {
 
     private Integer productId;
     private String productName;
+    
+    private String imageUrl;
+
+    
+    
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 	public Integer getCartItemsId() {
 		return cartItemsId;
 	}

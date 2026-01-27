@@ -27,6 +27,9 @@ public class ProductService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private FileSystemService fileSystemService;
 
     /* ======================
        GET
@@ -59,6 +62,9 @@ public class ProductService {
        ====================== */
 
     public Product addProduct(CreateProductDTO dto) {
+    	
+    	 // 🔥 Ensure folder exists BEFORE saving product
+        fileSystemService.ensureUserProductFolderExists(dto.getSellerId());
 
         Product product = new Product();
         product.setProductName(dto.getProductName());
@@ -95,6 +101,20 @@ public class ProductService {
 
         return productRepository.save(product);
     }
+    
+    
+    /* ======================
+    GET PRODUCTS BY SELLER
+    ====================== */
+	 public List<Product> getProductsBySeller(Integer userId) {
+	
+	     // Optional safety check (recommended)
+	     userRepository.findById(userId)
+	             .orElseThrow(() -> new RuntimeException("Seller not found"));
+	
+	     return productRepository.findBySeller_UserId(userId);
+	 }
+
     
     
     public Product updateProductById(Integer productId, CreateProductDTO dto) {

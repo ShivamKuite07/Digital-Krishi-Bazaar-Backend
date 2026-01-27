@@ -91,6 +91,20 @@ public class OrderController {
 
         return mapToDTO(orderService.updateOrderStatus(id, status));
     }
+    
+    
+    /* ======================
+    GET ORDERS BY SELLER
+    ====================== */
+	 @GetMapping("/seller/{sellerId}")
+	 public List<OrderDTO> getOrdersBySeller(@PathVariable Integer sellerId) {
+	
+	     return orderService.getOrdersBySeller(sellerId)
+	             .stream()
+	             .map(this::mapToDTO)
+	             .toList();
+	 }
+	    
 
     /* ======================
        ENTITY → DTO

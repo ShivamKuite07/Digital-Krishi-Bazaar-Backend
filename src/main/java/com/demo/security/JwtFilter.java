@@ -28,14 +28,39 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // ✅ Skip JWT for public endpoints
+        if (
+            request.getMethod().equals("OPTIONS") ||
+
+            path.startsWith("/api/auth") ||
+            path.startsWith("/api/users") ||
+
+            (path.startsWith("/api/products")
+                && request.getMethod().equals("GET")) ||
+
+            path.startsWith("/productImages")
+        ) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
-        String email = null;
-        String token = null;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+        String token = authHeader.substring(7);
+        String email;
+
+        try {
             email = jwtUtil.extractEmail(token);
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
+            return;
         }
 
         if (email != null &&
@@ -43,6 +68,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserDetails userDetails =
                     userDetailsService.loadUserByUsername(email);
+
+            if (!jwtUtil.validateToken(token, userDetails)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Token expired");
+                return;
+            }
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
@@ -57,4 +87,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+
 }

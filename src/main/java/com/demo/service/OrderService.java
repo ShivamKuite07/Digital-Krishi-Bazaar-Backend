@@ -58,6 +58,10 @@ public class OrderService {
         return orderRepository.findByUser_UserIdAndOrderStatus(
                 userId, status.toUpperCase());
     }
+    
+    public List<Order> getOrdersBySeller(Integer sellerId) {
+        return orderRepository.findOrdersBySellerId(sellerId);
+    }
 
     /* ======================
        CREATE ORDER (FROM CART)

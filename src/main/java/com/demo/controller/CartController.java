@@ -60,6 +60,21 @@ public class CartController {
 
         return mapToDTO(cartService.removeProductFromCart(userId, productId));
     }
+    
+    
+    /* ======================
+    DECREMENT PRODUCT
+    ====================== */
+	 @PostMapping("/decrement/product/{productId}")
+	 public CartDTO decrementProduct(
+	         @RequestParam Integer userId,
+	         @PathVariable Integer productId) {
+	
+	     return mapToDTO(
+	         cartService.decrementProductFromCart(userId, productId)
+	     );
+	 }
+
 
     /* ======================
        ENTITY → DTO
@@ -83,6 +98,7 @@ public class CartController {
                     itemDTO.setPrice(ci.getPrice());
                     itemDTO.setProductId(ci.getProduct().getProductId());
                     itemDTO.setProductName(ci.getProduct().getProductName());
+                    itemDTO.setImageUrl(ci.getProduct().getImageUrl());
                     return itemDTO;
                 })
                 .toList();
