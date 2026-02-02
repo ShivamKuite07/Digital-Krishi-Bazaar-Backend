@@ -1,5 +1,6 @@
 package com.demo.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserResponseDTO {
@@ -11,8 +12,29 @@ public class UserResponseDTO {
     private String address;
     private String status;
     private Integer credit;
+    
+    private String gender;
+    private LocalDate dob;
+    
+    
 
-    private List<RoleDTO> roles;
+    public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public LocalDate getDob() {
+		return dob;
+	}
+
+	public void setDob(LocalDate dob) {
+		this.dob = dob;
+	}
+
+	private List<RoleDTO> roles;
 
 	public Integer getUserId() {
 		return userId;

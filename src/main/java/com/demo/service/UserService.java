@@ -7,10 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.demo.dto.CreateUserDTO;
+import com.demo.model.Division;
 import com.demo.model.Role;
+import com.demo.model.State;
 import com.demo.model.User;
 import com.demo.model.UserRole;
+import com.demo.repository.DivisionRepository;
 import com.demo.repository.RoleRepository;
+import com.demo.repository.StateRepository;
 import com.demo.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,7 +30,10 @@ public class UserService {
     RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    StateRepository stateRepository;
+    @Autowired
+    DivisionRepository divisionRepository;
     
     
     public void assignRoles(Integer userId, List<Integer> roleIds) {
@@ -51,24 +59,50 @@ public class UserService {
     }
 
 
- 
     @Transactional
-    public User createUser(User user) {
+    public User createUser(CreateUserDTO dto) {
 
+        User user = new User();
+
+        user.setUserName(dto.getUserName());
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setMobile(dto.getMobile());
+        user.setAddress(dto.getAddress());
+        user.setStatus(dto.getStatus());
+        user.setCredit(dto.getCredit());
+        user.setGender(dto.getGender());
+        user.setDob(dto.getDob());
         user.setCreatedAt(LocalDateTime.now());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        // ✅ DEFAULT ROLE = BUYER
         Role buyer = roleRepository.findByRoleName("BUYER")
                 .orElseThrow(() -> new RuntimeException("BUYER role not found"));
 
         UserRole userRole = new UserRole();
         userRole.setUser(user);
         userRole.setRole(buyer);
-
         user.getUserRoles().add(userRole);
+
+        // ✅ STATE
+        State state = stateRepository.findById(dto.getStateId())
+                .orElseThrow(() -> new RuntimeException("State not found"));
+
+        // ✅ DIVISION
+        Division division = divisionRepository.findById(dto.getDivisionId())
+                .orElseThrow(() -> new RuntimeException("Division not found"));
+
+        // ✅ VALIDATION (IMPORTANT 🔥)
+        if (!division.getState().getStateId().equals(state.getStateId())) {
+            throw new RuntimeException("Division does not belong to selected state");
+        }
+
+        user.setState(state);
+        user.setDivision(division);
 
         return userRepository.save(user);
     }
+
 
 
 

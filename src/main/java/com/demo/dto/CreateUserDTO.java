@@ -1,5 +1,7 @@
 package com.demo.dto;
 
+import java.time.LocalDate;
+
 public class CreateUserDTO {
 
     private String userName;
@@ -9,8 +11,42 @@ public class CreateUserDTO {
     private String address;
     private String status;
     private Integer credit;
+
+    private Integer stateId;
+    private Integer divisionId;
     
     
+    private String gender;
+    private LocalDate dob;
+    
+    
+
+
+    
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public LocalDate getDob() {
+		return dob;
+	}
+	public void setDob(LocalDate dob) {
+		this.dob = dob;
+	}
+	public Integer getStateId() {
+		return stateId;
+	}
+	public void setStateId(Integer stateId) {
+		this.stateId = stateId;
+	}
+	public Integer getDivisionId() {
+		return divisionId;
+	}
+	public void setDivisionId(Integer divisionId) {
+		this.divisionId = divisionId;
+	}
 	public String getUserName() {
 		return userName;
 	}

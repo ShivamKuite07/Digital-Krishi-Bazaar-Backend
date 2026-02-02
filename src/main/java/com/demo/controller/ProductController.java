@@ -140,4 +140,20 @@ public class ProductController {
 
         return dto;
     }
+    
+    
+    
+    
+    
+    
+    @GetMapping("/region/user/{userId}")
+    public List<ProductDTO> getProductsForUserRegion(
+            @PathVariable Integer userId) {
+
+        return productService.getProductsForUserRegion(userId)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
 }

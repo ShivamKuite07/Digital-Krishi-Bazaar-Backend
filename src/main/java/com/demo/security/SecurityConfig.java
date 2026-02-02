@@ -29,66 +29,79 @@ public class SecurityConfig {
             throws Exception {
 
         http
-            // ✅ Enable CORS
+            // Enable CORS
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-            // ✅ Disable CSRF (JWT-based API)
+            // Disable CSRF (JWT)
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ Preflight requests
+                // Preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // ✅ PUBLIC AUTH ENDPOINTS
+                // 🔓 PUBLIC APIs
                 .requestMatchers(
-                    "/api/auth/login",
-                    "/api/auth/register",
-                    "/api/users",
-                    "/api/users/**"
-                ).permitAll()
-
-                // ✅ ALLOW PRODUCT API (for port 9090 service)
-                .requestMatchers(
-                    "/api/products",
-                    "/api/products/**",
-                    "/api/users",
+                    "/api/auth/**",
                     "/api/users/**",
-                    "/productImages/**"
+                    "/api/states/**",
+                    "/api/divisions/**",
+                    "/productImages/**",
+                    "/api/payments/**",
+                    "/api/reviews/**"
                 ).permitAll()
-                
-                .requestMatchers("/api/orders/seller/**").authenticated()
-                
-             // 🔐 SELLER / ADMIN: create & update
-                .requestMatchers(HttpMethod.POST, "/api/products/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/api/products/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/api/products/**").authenticated()
 
-                // 🔐 Everything else requires JWT
+                // 🟢 PUBLIC PRODUCT READ
+                .requestMatchers(HttpMethod.GET, "/api/products/**")
+                .permitAll()
+
+                // 🟡 BUYER: REGION PRODUCTS
+                .requestMatchers("/api/products/region/**")
+                .hasRole("BUYER")
+
+                // 🛒 BUYER: CART
+                .requestMatchers("/api/cart/**")
+                .hasRole("BUYER")
+
+                // 🧑‍🌾 SELLER / ADMIN: PRODUCT WRITE
+                .requestMatchers(HttpMethod.POST, "/api/products/**")
+                .hasAnyRole("SELLER", "ADMIN")
+
+                .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                .hasAnyRole("SELLER", "ADMIN")
+
+                .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                .hasAnyRole("SELLER", "ADMIN")
+
+                // 📦 SELLER ORDERS
+                .requestMatchers("/api/orders/seller/**")
+                .authenticated()
+
+                // 🔐 EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
-            // ✅ Stateless JWT
+            // Stateless JWT
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
 
-        // ✅ JWT filter
+        // JWT filter
         http.addFilterBefore(jwtFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🌍 GLOBAL CORS CONFIG
+    // 🌍 CORS CONFIG
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
-            "http://localhost:5173",  // frontend
-            "http://localhost:9090"   // QnA backend (safe to add)
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:*",
+            "http://127.0.0.1:*"
         ));
 
         config.setAllowedMethods(
@@ -96,7 +109,8 @@ public class SecurityConfig {
         );
 
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
+
+        config.setAllowCredentials(false); // ✅ IMPORTANT
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -104,6 +118,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(

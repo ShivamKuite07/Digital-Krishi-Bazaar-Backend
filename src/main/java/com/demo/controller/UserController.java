@@ -32,20 +32,17 @@ public class UserController {
        CREATE USER
        ====================== */
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody CreateUserDTO dto) {
+    public ResponseEntity<UserResponseDTO> createUser(
+            @RequestBody CreateUserDTO dto) {
 
-        User user = new User();
-        user.setUserName(dto.getUserName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
-        user.setMobile(dto.getMobile());
-        user.setAddress(dto.getAddress());
-        user.setStatus(dto.getStatus());
-        user.setCredit(dto.getCredit());
+        User savedUser = userService.createUser(dto);
 
-        User savedUser = userService.createUser(user);
-        return new ResponseEntity<>(mapToUserDTO(savedUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                mapToUserDTO(savedUser),
+                HttpStatus.CREATED
+        );
     }
+
 
 
     /* ======================
@@ -142,6 +139,9 @@ public class UserController {
         dto.setAddress(user.getAddress());
         dto.setStatus(user.getStatus());
         dto.setCredit(user.getCredit());
+        dto.setGender(user.getGender());
+        dto.setDob(user.getDob());
+        
 
         List<RoleDTO> roles = user.getUserRoles()
                 .stream()

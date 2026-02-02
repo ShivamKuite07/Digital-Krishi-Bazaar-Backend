@@ -144,6 +144,26 @@ public class ProductService {
 
         return productRepository.save(product);
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public List<Product> getProductsForUserRegion(Integer userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Integer stateId = user.getState().getStateId();
+
+        return productRepository
+                .findBySeller_State_StateIdAndStatus(stateId, "APPROVED");
+    }
+
 
     
     

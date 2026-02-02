@@ -1,5 +1,6 @@
 package com.demo.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -35,6 +38,9 @@ public class User{
     private Integer credit;
 
     private LocalDateTime createdAt;
+    
+    private String gender;
+    private LocalDate dob;
 
     @OneToMany(
     	    mappedBy = "user",
@@ -56,6 +62,22 @@ public class User{
 
 
 
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public LocalDate getDob() {
+		return dob;
+	}
+
+	public void setDob(LocalDate dob) {
+		this.dob = dob;
+	}
 
 	public Integer getUserId() {
 		return userId;
@@ -144,6 +166,45 @@ public class User{
 	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "state_id")
+	private State state;
+
+	@ManyToOne
+	@JoinColumn(name = "division_id")
+	private Division division;
+
+
+
+
+
+
+
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public Division getDivision() {
+		return division;
+	}
+
+	public void setDivision(Division division) {
+		this.division = division;
+	}
+
     
     
 }
