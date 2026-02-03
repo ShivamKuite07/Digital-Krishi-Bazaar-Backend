@@ -124,6 +124,8 @@ public class ProductController {
         dto.setPrice(p.getPrice());
         dto.setQuantityAvailable(p.getQuantityAvailable());
         dto.setUnit(p.getUnit());
+        dto.setQuality(p.getQuality());
+        dto.setOriginPlace(p.getOriginPlace());
         dto.setStatus(p.getStatus());
         dto.setImageUrl(p.getImageUrl());
         dto.setCreatedAt(p.getCreatedAt());

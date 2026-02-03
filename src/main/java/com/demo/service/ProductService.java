@@ -72,6 +72,8 @@ public class ProductService {
         product.setPrice(dto.getPrice());
         product.setQuantityAvailable(dto.getQuantityAvailable());
         product.setUnit(dto.getUnit());
+        product.setQuality(dto.getQuality());
+        product.setOriginPlace(dto.getOriginPlace());
         product.setImageUrl(dto.getImageUrl());
 
         // DEFAULT STATUS
@@ -126,6 +128,8 @@ public class ProductService {
         product.setPrice(dto.getPrice());
         product.setQuantityAvailable(dto.getQuantityAvailable());
         product.setUnit(dto.getUnit());
+        product.setQuality(dto.getQuality());
+        product.setOriginPlace(dto.getOriginPlace());
         product.setImageUrl(dto.getImageUrl());
 
         // Category update (optional)

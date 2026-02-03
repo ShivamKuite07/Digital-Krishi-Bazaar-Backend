@@ -36,8 +36,29 @@ public class Product {
     private Integer price;
     private Integer quantityAvailable;
     private String unit;
+    
+    private String quality;
+    private String originPlace;
+    
+    
 
-    // PENDING | APPROVED | REJECTED
+    public String getQuality() {
+		return quality;
+	}
+
+	public void setQuality(String quality) {
+		this.quality = quality;
+	}
+
+	public String getOriginPlace() {
+		return originPlace;
+	}
+
+	public void setOriginPlace(String originPlace) {
+		this.originPlace = originPlace;
+	}
+
+	// PENDING | APPROVED | REJECTED
     private String status;
 
     private String imageUrl;

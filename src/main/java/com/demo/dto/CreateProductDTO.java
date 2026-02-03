@@ -8,9 +8,26 @@ public class CreateProductDTO {
     private Integer quantityAvailable;
     private String unit;
     private String imageUrl;
+    
+    private String quality;
+    private String originPlace;
 
-    private Integer categoryId;
+    
+	private Integer categoryId;
     private Integer sellerId;
+    
+    public String getQuality() {
+		return quality;
+	}
+	public void setQuality(String quality) {
+		this.quality = quality;
+	}
+	public String getOriginPlace() {
+		return originPlace;
+	}
+	public void setOriginPlace(String originPlace) {
+		this.originPlace = originPlace;
+	}
     
     
 	public String getProductName() {

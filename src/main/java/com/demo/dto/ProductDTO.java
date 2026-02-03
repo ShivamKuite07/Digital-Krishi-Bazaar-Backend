@@ -11,7 +11,10 @@ public class ProductDTO {
     private String description;
     private Integer price;
     private Integer quantityAvailable;
-    private String unit;
+
+	private String unit;
+    private String quality;
+    private String originPlace;
     private String status;
     private String imageUrl;
     private LocalDateTime createdAt;
@@ -21,6 +24,20 @@ public class ProductDTO {
 
     private Integer sellerId;
     private String sellerName;
+    
+    
+    public String getQuality() {
+		return quality;
+	}
+	public void setQuality(String quality) {
+		this.quality = quality;
+	}
+	public String getOriginPlace() {
+		return originPlace;
+	}
+	public void setOriginPlace(String originPlace) {
+		this.originPlace = originPlace;
+	}
     
     
 	public Integer getProductId() {
